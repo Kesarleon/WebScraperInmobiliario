@@ -142,6 +142,13 @@ class BaseScraper(ABC):
                         params=params,
                         headers=headers or {},
                     )
+                    if resp.status_code >= 400:
+                        logger.warning(
+                            "HTTP {} {} — {}",
+                            resp.status_code,
+                            resp.reason_phrase,
+                            str(resp.url),
+                        )
                     resp.raise_for_status()
 
             if as_json:

@@ -38,8 +38,13 @@ async def _run_scraper(
 
     async with scraper_cls() as scraper:
         for operation in operations:
-            async for listing in scraper.fetch_all(operation):
-                listings.append(listing)
+            try:
+                async for listing in scraper.fetch_all(operation):
+                    listings.append(listing)
+            except Exception as exc:
+                msg = f"{operation}: {exc}"
+                errors.append(msg)
+                logger.error("[{}] Scraper error — {}", scraper_cls.__name__, msg)
 
     return listings, errors
 
